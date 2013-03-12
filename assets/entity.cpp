@@ -3,40 +3,41 @@
 // Constructor
 Entity::Entity( int problem_size){
 	this-> problem_size = problem_size;
-	int* permutation;
-	permutation = new int[ problem_size];
-	//generate the permutation and write it into the bitstring
-	for( int i = 0; i < problem_size; i++){
-		int max = problem_size - i - 1;
-		permutation[i] = rand() % ( max + 1);
 		//encode the generated step in the permuation
-		int nbits = bitsNeeded( max);
-		if( debug_entity) printf("max: %d, bitsN: %d, value: %d, string: ", max, nbits, permutation[i]);
-		for(int j = nbits - 1; j >= 0; j--){
-			chromosome.push_back( (permutation[i] >> j)%2);
-			if( debug_entity) printf("%d", (permutation[i] >> j)%2);}
-		if( debug_entity) printf("\n");}}
+	int* permutation = this->randomPermutation();
+	this->newRandomPermutation();}
 
 // Encoding and Decoding
+void Entity::encode_permutation( int* permutation){
+	while( chromosome.size())
+		chromosome.pop_back();
+	for( int i = 0; i < problem_size - 1; i++){
+		int nbits = bitsNeeded( problem_size - i - 1);
+		for(int j = nbits - 1; j >= 0; j--)
+			chromosome.push_back( (permutation[i] >> j)%2);}}
 int* Entity::extract_permutation( int* dest){
 	if( dest==NULL) //remember to delete later!!
 		dest = new int[ problem_size];
 	int chromosome_i = 0;
-	if( debug_entity) printf("permutation: ( ");
+	//if( debug_entity) printf("max   : ( 7, 6, 5, 4, 3, 2, 1, 0)\n");
+	if( debug_entity) printf("permut: ( ");
 	//reconstruct the permutation and write it into 'dest'
-	for( int i = 0; i < problem_size; i++){
+	for( int i = 0; i < problem_size - 1; i++){
 		int max = problem_size - i - 1;
-		int permutation_currentStep = 0;
-		//decode the step in the permuation
 		int nbits = bitsNeeded( max);
+		//decode the step in the permuation
+		int permutation_currentStep = 0;
 		for(int j = nbits - 1; j >= 0; j--)
 			permutation_currentStep += chromosome[ chromosome_i++] << j;
-		if( debug_entity) printf( "%d, ",permutation_currentStep);
+		if( debug_entity) printf( "%d, ", permutation_currentStep);
+		//write the decoded value to dest
 		dest[i] = permutation_currentStep;}
-	if( debug_entity) printf(")\n");
+	//add the last item
+	dest[ problem_size - 1] = 0;
+	if( debug_entity) printf( "%d)\n", dest[ problem_size - 1]);
 	return dest;}
 
-int* Entity::extract_grid( int* dest ){
+int* Entity::extract_grid( int* dest){
 	if( dest==NULL) //remember to delete later!!
 		dest = new int[ problem_size];
 	int* permutation = this->extract_permutation();
@@ -80,14 +81,18 @@ int Entity::fitness(){
 	return result;}
 
 Entity& Entity::mutate(){
-	chromosome[ rand() % chromosome.size()].flip();
+	int loc = rand() % chromosome.size();
+	chromosome[ loc] ^=1;
+	if( ! this->isValid())
+		this->newRandomPermutation();
 	return *this;}
 
 Entity& Entity::cross( const Entity& other){
 	assert( problem_size == other.problem_size);
 	for( int i = rand() % chromosome.size(); i < chromosome.size(); i++)
-		if( chromosome[i] != other.chromosome[i])
-			chromosome[i].flip();//chromosome[i] = other.chromosome[i] not working
+		chromosome[i] = other.chromosome[i];
+	if( ! this->isValid())
+		this->newRandomPermutation();
 	return *this;}
 
 // Debugging
@@ -101,3 +106,22 @@ void Entity::draw_grid(){
 				'Q' : '_');
 		printf("]\n");}
 	delete grid;}
+void Entity::newRandomPermutation(){
+		int* permutation = this->randomPermutation();
+		this->encode_permutation( permutation);
+		delete permutation;}
+int* Entity::randomPermutation( int* dest){
+	if( dest == NULL)
+		dest = new int[problem_size];
+	//generate the permutation
+	for( int i = 0; i < problem_size-1; i++){
+		int max = problem_size - i - 1;
+		dest[i] = rand() % ( max + 1);}
+	dest[problem_size - 1] = 0;
+	return dest;}
+bool Entity::isValid(){
+	int* permutation = this->extract_permutation();
+	for( int i = 0; i < problem_size; i++)
+		if( permutation[i] > problem_size - 1 - i)
+			return false;
+	return true;}
