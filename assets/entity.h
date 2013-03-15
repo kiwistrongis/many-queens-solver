@@ -1,12 +1,10 @@
 #ifndef entity_h
 #define entity_h
 
-#include <cassert>
+//library includes
 #include <cstddef>
-#include <cstdio>
-#include <cstdlib>
 #include <vector>
-
+//local includes
 #include "debug.h"
 
 /** @class Entity
@@ -27,20 +25,27 @@ public:
 	std::vector<int> chromosome;
 	
 	Entity( int problem_size);
+	Entity( const Entity& other);
+	~Entity();
+
+	Entity& operator=( const Entity& other);
 	
 	void encode_permutation( int* permutation);
 	int* extract_permutation( int* dest = NULL);
 	int* extract_grid( int* dest = NULL);
 	void draw_grid();
+	void print_permutation();
+	void print_grid();
 
-	bool isValid();
 	int fitness();
 	Entity& mutate();
 	Entity& cross( const Entity& other);
+	Entity& newRandomPermutation();
 private:
+	bool isValid();
+	void fix();
 	int bitsNeeded( int chromosome);
 	int* permutation_toGrid( int* permutation, int* dest);
-	void newRandomPermutation();
 	int* randomPermutation( int* dest = NULL);
 };
 

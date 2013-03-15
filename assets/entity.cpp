@@ -1,11 +1,34 @@
+//library includes
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+//override include
 #include "entity.h"
 
-// Constructor
+// Constructor and Destructor
 Entity::Entity( int problem_size){
-	this-> problem_size = problem_size;
+	this->problem_size = problem_size;
 		//encode the generated step in the permuation
 	int* permutation = this->randomPermutation();
 	this->newRandomPermutation();}
+
+Entity::Entity( const Entity& other){
+	*this = other;}
+
+Entity::~Entity(){
+	while( chromosome.size())
+		chromosome.erase( chromosome.begin());}
+
+// Operators
+Entity& Entity::operator=( const Entity& other){
+	//shallow fields
+	problem_size = other.problem_size;
+	//deep fields
+	while( chromosome.size())
+		chromosome.erase( chromosome.begin());
+	for( int i = 0; i < other.problem_size; i ++)
+		chromosome.push_back( other.chromosome[i]);
+	return *this;}
 
 // Encoding and Decoding
 void Entity::encode_permutation( int* permutation){
@@ -15,6 +38,7 @@ void Entity::encode_permutation( int* permutation){
 		int nbits = bitsNeeded( problem_size - i - 1);
 		for(int j = nbits - 1; j >= 0; j--)
 			chromosome.push_back( (permutation[i] >> j)%2);}}
+
 int* Entity::extract_permutation( int* dest){
 	if( dest==NULL) //remember to delete later!!
 		dest = new int[ problem_size];
@@ -42,7 +66,7 @@ int* Entity::extract_grid( int* dest){
 		dest = new int[ problem_size];
 	int* permutation = this->extract_permutation();
 	permutation_toGrid( permutation, dest);
-	delete permutation;
+	delete[] permutation;
 	return dest;}
 
 int Entity::bitsNeeded( int data){
@@ -77,22 +101,20 @@ int Entity::fitness(){
 				grid[i] - dist == grid[j] ||
 				grid[i] + dist == grid[j];}
 		if( debug_entity) printf("]\n");}
-	delete grid;
+	delete[] grid;
 	return result;}
 
 Entity& Entity::mutate(){
 	int loc = rand() % chromosome.size();
 	chromosome[ loc] ^=1;
-	if( ! this->isValid())
-		this->newRandomPermutation();
+	this->fix();
 	return *this;}
 
 Entity& Entity::cross( const Entity& other){
 	assert( problem_size == other.problem_size);
 	for( int i = rand() % chromosome.size(); i < chromosome.size(); i++)
 		chromosome[i] = other.chromosome[i];
-	if( ! this->isValid())
-		this->newRandomPermutation();
+	this->fix();
 	return *this;}
 
 // Debugging
@@ -105,11 +127,31 @@ void Entity::draw_grid(){
 			printf("|%c", (j == grid[i]) ?
 				'Q' : '_');
 		printf("]\n");}
-	delete grid;}
-void Entity::newRandomPermutation(){
+	delete[] grid;}
+
+void Entity::print_permutation(){
+	int* permutation = this->extract_permutation();
+	printf("permutation: ( %d", permutation[0]);
+	for( int i = 1; i < problem_size; i++)
+		printf(", %d", permutation[i]);
+	printf(")\n");
+	delete[] permutation;}
+
+void Entity::print_grid(){
+	int* grid = this->extract_grid();
+	printf("grid: ( %d", grid[0]);
+	for( int i = 1; i < problem_size; i++)
+		printf(", %d", grid[i]);
+	printf(")\n");
+	delete[] grid;}
+
+// Maintainance
+Entity& Entity::newRandomPermutation(){
 		int* permutation = this->randomPermutation();
 		this->encode_permutation( permutation);
-		delete permutation;}
+		delete[] permutation;
+		return *this;}
+
 int* Entity::randomPermutation( int* dest){
 	if( dest == NULL)
 		dest = new int[problem_size];
@@ -119,9 +161,19 @@ int* Entity::randomPermutation( int* dest){
 		dest[i] = rand() % ( max + 1);}
 	dest[problem_size - 1] = 0;
 	return dest;}
+
 bool Entity::isValid(){
 	int* permutation = this->extract_permutation();
 	for( int i = 0; i < problem_size; i++)
 		if( permutation[i] > problem_size - 1 - i)
 			return false;
 	return true;}
+
+void Entity::fix(){
+	int* permutation = this->extract_permutation();
+	for( int i = 0; i < problem_size; i++){
+		int max = problem_size - i - 1;
+		if( permutation[i] > max)
+			permutation[i] = rand() % max;}
+	this->encode_permutation( permutation);
+	delete[] permutation;}
