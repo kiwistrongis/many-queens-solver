@@ -2,12 +2,11 @@
 #define assets_configuration_h
 
 //library includes
-#include <boost/program_options.hpp>
-namespace bpo = boost::program_options;
+//local includes
 
 class Configuration {
 public:
-	
+	Configuration();
 private:
 };
 

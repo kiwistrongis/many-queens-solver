@@ -8,6 +8,7 @@ clean: clean-special
 	tools/cleandir tools
 clean-special:
 	rm -rf documentation
+	rm -f solver
 docs: doxyfile
 	doxygen
 docs-view: docs
@@ -22,8 +23,7 @@ git-prepare: clean
 all: locals assets
 locals: \
 	queens-lib.a \
-	queens-solver.o \
-	queens-solver
+	solver
 assets: \
 	assets/entity.o \
 	assets/population.o
@@ -48,21 +48,21 @@ queens-lib.a: \
 		assets/configuration.o
 	ranlib queens-lib.a
 
-queens-solver.o: \
-		queens-solver.cpp \
+solver.o: \
+		solver.cpp \
 		queens-lib.h \
 		assets/debug.h \
 		assets/entity.h \
 		assets/globals.h \
 		assets/population.h \
 		assets/configuration.h
-	g++ -c -o queens-solver.o \
-		queens-solver.cpp
-queens-solver: \
-		queens-solver.o \
+	g++ -c -o solver.o \
+		solver.cpp
+solver: \
+		solver.o \
 		queens-lib.h
-	g++ -o queens-solver \
-		queens-solver.o \
+	g++ -o solver \
+		solver.o \
 		queens-lib.a
 
 #assets
@@ -90,6 +90,10 @@ assets/configuration.o: \
 		assets/configuration.cpp
 
 #tests
+test-s: test-solver
+test-solver: solver
+	./solver
+
 test-e: test-entity
 test-entity: tests/testEntity.out
 	tests/testEntity.out
