@@ -21,12 +21,16 @@ git-prepare: clean
 #groups
 all: locals assets
 locals: \
-	queens-lib.a
+	queens-lib.a \
+	queens-solver.o \
+	queens-solver
 assets: \
 	assets/entity.o \
 	assets/population.o
 commands:
-tests:
+tests: \
+	tests/testEntity.out \
+	tests/testPopulation.out
 resources: \
 	data/run.csv \
 	data/plot.png
@@ -35,12 +39,31 @@ resources: \
 queens-lib.a: \
 		assets/entity.o \
 		assets/functions.o \
-		assets/population.o
+		assets/population.o \
+		assets/configuration.o
 	ar rc queens-lib.a \
 		assets/entity.o \
 		assets/functions.o \
-		assets/population.o
+		assets/population.o \
+		assets/configuration.o
 	ranlib queens-lib.a
+
+queens-solver.o: \
+		queens-solver.cpp \
+		queens-lib.h \
+		assets/debug.h \
+		assets/entity.h \
+		assets/globals.h \
+		assets/population.h \
+		assets/configuration.h
+	g++ -c -o queens-solver.o \
+		queens-solver.cpp
+queens-solver: \
+		queens-solver.o \
+		queens-lib.h
+	g++ -o queens-solver \
+		queens-solver.o \
+		queens-lib.a
 
 #assets
 assets/entity.o: \
@@ -61,6 +84,10 @@ assets/functions.o: \
 		assets/functions.cpp
 	g++ -c -o assets/functions.o \
 		assets/functions.cpp
+assets/configuration.o: \
+		assets/configuration.h
+	g++ -c -o assets/configuration.o \
+		assets/configuration.cpp
 
 #tests
 test-e: test-entity

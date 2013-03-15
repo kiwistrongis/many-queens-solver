@@ -1,5 +1,5 @@
-#ifndef entity_h
-#define entity_h
+#ifndef assets_entity_h
+#define assets_entity_h
 
 //library includes
 #include <cstddef>
@@ -8,7 +8,7 @@
 #include "debug.h"
 
 /** @class Entity
- * @brief This class represents a candidate solution to the N-Queens problem.
+ * @brief Represents a candidate solution to the N-Queens problem
  * 
  * The class implements all of the following functionality:
  * - encoding and decoding of the chromosome
@@ -16,37 +16,52 @@
  * - multiple mutation and crossover evolutionary operators
  * 
  * The following mutation operators are implemented:
+ * - Flip a random bit
  * 
  * The following crossover operators are implemented.
+ * - Copy bits after some random n
  **/
 class Entity {
 public:
+	//Fields
 	int problem_size;
 	std::vector<int> chromosome;
-	
+
+	//Constructors and Destructor
 	Entity( int problem_size);
 	Entity( const Entity& other);
 	~Entity();
 
+	//Operators
 	Entity& operator=( const Entity& other);
+	bool operator==( const Entity& other) const;
+	bool operator!=( const Entity& other) const;
 	
+	//Encoding and Decoding
 	void encode_permutation( int* permutation);
-	int* extract_permutation( int* dest = NULL);
-	int* extract_grid( int* dest = NULL);
-	void draw_grid();
-	void print_permutation();
-	void print_grid();
+	int* extract_permutation( int* dest = NULL) const;
+	int* extract_grid( int* dest = NULL) const;
+	//Encoding and Decoding Minor
+	int* permutation_toGrid( int* permutation, int* dest) const;
+	int bitsNeeded( int data) const;
 
+	//Evaluation and Evolution
 	int fitness();
 	Entity& mutate();
 	Entity& cross( const Entity& other);
 	Entity& newRandomPermutation();
-private:
-	bool isValid();
-	void fix();
-	int bitsNeeded( int chromosome);
-	int* permutation_toGrid( int* permutation, int* dest);
+	//Evaluation and Evolution Minor
 	int* randomPermutation( int* dest = NULL);
+
+	//Display
+	void draw_grid() const;
+	void print_permutation() const;
+	void print_grid() const;
+
+	//Maintainance
+	void fix();
+	bool isValid() const;
+private:
 };
 
 #endif

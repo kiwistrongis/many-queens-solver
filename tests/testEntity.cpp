@@ -6,10 +6,28 @@
 
 int main( ){
 	srand( time( NULL));
-	Entity a( 8);
 
 	printf(" Entity A:\n");
-	a.print_grid();
+	Entity a( 8);
+	a.print_permutation();
+
+	printf(" Entity C:\n");
+	Entity c( a);
+	c.print_permutation();
+	printf("c==a; %d\n", c==a);
+	c.newRandomPermutation();
+	printf(" Entity C Randomized:\n");
+	c.print_permutation();
+	printf("c==a; %d\n", c==a);
+	//c.print_permutation();
+	//c.print_grid();
+
+	/*printf(" Entity D:\n");
+	int asdf[] = { 0,0,0,0,0,0,0,0};
+	c.encode_permutation( asdf);
+	c.print_permutation();
+	c.draw_grid();
+	printf(" Fitness: %d\n", c.fitness());
 
 	printf(" Entity A mutated:\n");
 	Entity a2(a);
@@ -27,5 +45,5 @@ int main( ){
 	printf(" Entity B cross A:\n");
 	Entity b2(b);
 	b2.cross(a);
-	b2.print_grid();
+	b2.print_grid();*/
 }

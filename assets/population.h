@@ -7,7 +7,7 @@
 #include "entity.h"
 
 /** @class Population
- * @brief This class represents a group of entities.
+ * @brief Represents a group of entities
  * 
  * The class contains multiple entities, and through evolving the group using some specific mutation and crossover operators
  **/
@@ -23,8 +23,7 @@ public:
 	bool removeTheStrong;
 
 	//Constructors and Destructor
-	Population( int n, int p_size);
-	Population( int n, int p_size, double m_chance, double c_chance);
+	Population( int n, int p_size, double m_chance = 0.1, double c_chance = 0.7, bool rmStrong = true);
 	Population( const Population&);
 	~Population();
 
@@ -39,12 +38,21 @@ public:
 	void save( Entity entity);
 	void saveTheStrong();
 	void cullTheWeak( double average, double standardDeviation);
+	void cullTheVeryWeak( double average, double standardDeviation);
 	void rouletteSelect();
 
 	//Statistics Functions
 	int* getStats();
-	double getAverage( int* stats = NULL);
-	double getStandardDeviation( double average);
+	double getAverage( int* stats);
+	int worstPossibleFitness();
+	double getStandardDeviation( double average, int* stats);
+
+	//Results
+	void removeDuplicateSolutions();
+	void print_solutions();
+
+	//Display
+	void print_stats();
 private:
 };
 
