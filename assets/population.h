@@ -4,6 +4,7 @@
 //library includes
 #include <vector>
 //local includes
+#include "configuration.h"
 #include "entity.h"
 
 /** @class Population
@@ -23,8 +24,8 @@ public:
 	bool removeTheStrong;
 
 	//Constructors and Destructor
-	Population( int n, int p_size, double m_chance = 0.1, double c_chance = 0.7, bool rmStrong = true);
 	Population( const Population&);
+	Population( const Configuration& configuration = Configuration(NULL));
 	~Population();
 
 	//Operators

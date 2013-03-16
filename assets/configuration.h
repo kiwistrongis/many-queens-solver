@@ -2,11 +2,28 @@
 #define assets_configuration_h
 
 //library includes
+#include <vector>
 //local includes
 
+/** @class Configuration
+ * @brief Represents the initial configuration of a population
+ * 
+ * Configuration objects handle the loading of population parameters from files. This makes initialization easier for the population class.
+ **/
 class Configuration {
 public:
-	Configuration();
+	// Population Config Fields
+	int problem_size;
+	int N;
+	double mutation_chance;
+	double cross_chance;
+	bool removeTheStrong;
+
+	// Run Config Fields
+	int nGenerations;
+
+	//Constructor
+	Configuration( char* filename = NULL);
 private:
 };
 

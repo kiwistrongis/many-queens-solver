@@ -1,28 +1,30 @@
 //library includes
 #include <cmath>
+#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 //local includes
 #include "globals.h"
+#include "configuration.h"
 //override include
 #include "population.h"
 
 // Constructors and Destructor
-Population::Population( int n, int p_size, double m_chance, double c_chance, bool rmStrong){
+Population::Population( const Population& other){
+	*this = other;}
+
+Population::Population( const Configuration& conf){
 	//fields
-	problem_size = p_size;
-	N = n;
-	mutation_chance = m_chance;
-	cross_chance = c_chance;
-	removeTheStrong = rmStrong;
+	problem_size = conf.problem_size;
+	N = conf.N;
+	mutation_chance = conf.mutation_chance;
+	cross_chance = conf.cross_chance;
+	removeTheStrong = conf.removeTheStrong;
 
 	//create all the entities
 	Entity* newEntity;
 	while( entities.size() < N)
-		entities.push_back( Entity( p_size));}
-
-Population::Population( const Population& other){
-	*this = other;}
+		entities.push_back( Entity( problem_size));}
 
 Population::~Population(){
 	entities.clear();

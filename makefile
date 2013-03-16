@@ -60,7 +60,7 @@ solver.o: \
 		solver.cpp
 solver: \
 		solver.o \
-		queens-lib.h
+		queens-lib.a
 	g++ -o solver \
 		solver.o \
 		queens-lib.a
@@ -85,7 +85,8 @@ assets/functions.o: \
 	g++ -c -o assets/functions.o \
 		assets/functions.cpp
 assets/configuration.o: \
-		assets/configuration.h
+		assets/configuration.h \
+		assets/configuration.cpp
 	g++ -c -o assets/configuration.o \
 		assets/configuration.cpp
 
@@ -125,3 +126,19 @@ tests/testPopulation.o: \
 		assets/entity.h
 	g++ -c -o tests/testPopulation.o \
 		tests/testPopulation.cpp
+
+test-c: test-configuration
+test-configuration: tests/testConfiguration.out
+	tests/testConfiguration.out
+tests/testConfiguration.out: \
+		tests/testConfiguration.o \
+		queens-lib.a
+	g++ -o tests/testConfiguration.out \
+		tests/testConfiguration.o \
+		queens-lib.a
+tests/testConfiguration.o: \
+		tests/testConfiguration.cpp \
+		assets/debug.h \
+		assets/entity.h
+	g++ -c -o tests/testConfiguration.o \
+		tests/testConfiguration.cpp

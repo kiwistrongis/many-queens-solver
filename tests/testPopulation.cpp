@@ -7,17 +7,18 @@
 
 int main(){
 	srand( time( NULL));
-	Population p ( 200, 7	);
+	Population p;
 
 	clock_t t = clock();
-
 	for( int i = 0; i < 500; i ++)
 		p.evolve();
 	printf("evolution took %f seconds\n", ((float)(clock()-t))/(CLOCKS_PER_SEC));
-	printf("initial solutions size: %d\n", p.solutions.size());
+
+	printf("prefiltered solutions size: %d\n", p.solutions.size());
 	t = clock();
 	p.removeDuplicateSolutions();
 	printf("filtering took %f seconds\n", ((float)(clock()-t))/(CLOCKS_PER_SEC));
+	
 	printf("filtered solutions size: %d\n", p.solutions.size());
 	if( p.solutions.size() > 0){
 		printf("first solution:\n");
