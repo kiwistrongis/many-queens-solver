@@ -9,6 +9,7 @@ clean: clean-special
 clean-special:
 	rm -rf documentation
 	rm -f solver
+	rm -r results/*
 docs: doxyfile
 	doxygen
 docs-view: docs

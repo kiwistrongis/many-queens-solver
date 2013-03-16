@@ -25,18 +25,22 @@ int main( int argc, char** argv){
 	if( debug_messages) printf("Done loading configuration\n");
 
 	int G = conf.nGenerations;
-	int P = 10; //conf.report_period;
+	int P = conf.report_period;
 
 	if( debug_messages) printf("Starting evolution\n");
 	clock_t start = clock();
 	for( int i = 0; i < G; i++){
-		if( !(i % P) ){
-			if( debug_messages)
-				printf("Generation %d/%d\r", i, G);
-			r.capture( p, i);}
+		if( (i % P) == 0 ){
+			if( debug_progress) printf("Generation %d/%d\r", i, G);
+			r.capture( p, i);
+			//handle failure
+			if( r.fail){
+				printf("Data write failure occured. Terminating.\n");
+				break;}}
 		p.evolve();}
 	float t = (float) (clock() - start) / ( CLOCKS_PER_SEC);
-	if( debug_messages) printf("Generation %d/%d\n", G, G);
+	r.capture( p, G); //final capture
+	if( debug_progress) printf("Generation %d/%d\n", G, G);
 
 	printf("Time taken: %f\n", t);
 

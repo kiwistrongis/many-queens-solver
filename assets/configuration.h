@@ -25,6 +25,9 @@ public:
 
 	//Report Config Fields
 	char* datafile;
+	char* chartfile;
+	char* plotscript_logfile;
+	int report_period;
 
 	//Constructor
 	Configuration( char* filename = NULL);

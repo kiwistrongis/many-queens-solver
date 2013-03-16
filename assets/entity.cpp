@@ -127,7 +127,7 @@ int Entity::bitsNeeded( int data) const{
 	return result;}
 
 // Evaluation and Evolution
-int Entity::fitness(){
+int Entity::fitness() const{
 	//setup
 	int result = 0;
 	int* grid = this->extract_grid();
@@ -179,7 +179,7 @@ Entity& Entity::newRandomPermutation(){
 	return *this;}
 
 // Evaluation and Evolution Minor
-int* Entity::randomPermutation( int* dest){
+int* Entity::randomPermutation( int* dest) const{
 	if( dest == NULL)
 		dest = new int[problem_size];
 	//generate the permutation

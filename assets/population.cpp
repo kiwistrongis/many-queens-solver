@@ -99,7 +99,7 @@ void Population::rouletteSelect(){
 	delete[] chances;}
 
 // Statistics
-int* Population::getStats(){
+int* Population::getStats() const{
 	int worstFitness = worstPossibleFitness();
 	int* count = new int[worstFitness + 1];
 	for( int i = 0; i <= worstFitness; i++)
@@ -108,17 +108,17 @@ int* Population::getStats(){
 		count[ entities[i].fitness()]++;
 	return count;}
 
-int Population::worstPossibleFitness(){
+int Population::worstPossibleFitness() const{
 	return (problem_size - 1)*(problem_size)/2;}
 
-double Population::getAverage( int* stats){
+double Population::getAverage( int* stats) const{
 	int worstFitness = worstPossibleFitness();
 	double average = 0.0;
 	for( int i = 0; i <= worstFitness; i++)
 		average += (double) i*stats[i] / N;
 	return average;}
 
-double Population::getStandardDeviation( double average, int* stats){
+double Population::getStandardDeviation( double average, int* stats) const{
 	int worstFitness = worstPossibleFitness();
 	double standardDeviation = 0.0;
 	for( int i = 0; i <= worstFitness; i++)
@@ -135,13 +135,13 @@ void Population::removeDuplicateSolutions(){
 				i--;
 				break;}}
 
-void Population::print_solutions(){
+void Population::print_solutions() const{
 	int solutions_size = solutions.size();
 	for( int i = 0; i < solutions_size; i++)
 		solutions[i].print_grid();}
 
 // Display
-void Population::print_stats(){
+void Population::print_stats() const{
 	//get the stats
 	int* stats = getStats();
 	double average = getAverage( stats);

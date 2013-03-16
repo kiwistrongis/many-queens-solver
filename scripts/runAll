@@ -1,0 +1,13 @@
+#!/bin/bash
+
+make -s solver
+
+dataFolder="data"
+resultsFolder="results"
+
+echo -e "Running all configurations in folder '$dataFolder'"
+for file in $dataFolder/*
+do
+	base=$(basename "$file")
+	./solver $file > $resultsFolder/${base%%.*}.log &	
+done

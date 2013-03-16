@@ -43,17 +43,17 @@ public:
 	void rouletteSelect();
 
 	//Statistics Functions
-	int* getStats();
-	double getAverage( int* stats);
-	int worstPossibleFitness();
-	double getStandardDeviation( double average, int* stats);
+	int* getStats() const;
+	double getAverage( int* stats) const;
+	int worstPossibleFitness() const;
+	double getStandardDeviation( double average, int* stats) const;
 
 	//Results
 	void removeDuplicateSolutions();
-	void print_solutions();
+	void print_solutions() const;
 
 	//Display
-	void print_stats();
+	void print_stats() const;
 private:
 };
 

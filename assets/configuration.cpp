@@ -18,9 +18,20 @@ Configuration::Configuration( char* filename){
 	cross_chance = 0.7;
 	removeTheStrong = true;
 	nGenerations = 500;
+	report_period = 10;
+	//datafile
 	datafile = new char[ 128];
 	char datafile_default[] = "results/default.csv";
 	strcpy( datafile, datafile_default);
+	//chart
+	chartfile = new char[ 128];
+	char chartfile_default[] = "results/default.png";
+	strcpy( chartfile, chartfile_default);
+	//plotscript_logfile
+	plotscript_logfile = new char[ 128];
+	char plotscript_logfile_default[] = "results/default.log2";
+	strcpy( plotscript_logfile, plotscript_logfile_default);
+
 	//try to load from file
 	if( NULL != filename){
 		string line;
@@ -61,9 +72,18 @@ Configuration::Configuration( char* filename){
 				if( valueStream >> newField)
 					nGenerations = newField;}
 			else if( 0 == key.compare("datafile")){
-				strcpy( datafile, value.c_str());}}
+				strcpy( datafile, value.c_str());}
+			else if( 0 == key.compare("chartfile")){
+				strcpy( chartfile, value.c_str());}
+			else if( 0 == key.compare("plotscript_logfile")){
+				strcpy( plotscript_logfile, value.c_str());}
+			else if( 0 == key.compare("report_period")){
+				int newField;
+				if( valueStream >> newField)
+					report_period = newField;}}
 		//done
 		file.close();}}
 
 Configuration::~Configuration(){
-	delete[] datafile;}
+	delete[] datafile;
+	delete[] chartfile;}

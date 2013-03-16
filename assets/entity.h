@@ -46,12 +46,12 @@ public:
 	int bitsNeeded( int data) const;
 
 	//Evaluation and Evolution
-	int fitness();
+	int fitness() const;
 	Entity& mutate();
 	Entity& cross( const Entity& other);
 	Entity& newRandomPermutation();
 	//Evaluation and Evolution Minor
-	int* randomPermutation( int* dest = NULL);
+	int* randomPermutation( int* dest = NULL) const;
 
 	//Display
 	void draw_grid() const;
