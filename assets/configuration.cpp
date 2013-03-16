@@ -1,5 +1,6 @@
 //library includes
 #include <cstddef>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -17,6 +18,9 @@ Configuration::Configuration( char* filename){
 	cross_chance = 0.7;
 	removeTheStrong = true;
 	nGenerations = 500;
+	datafile = new char[ 128];
+	char datafile_default[] = "results/default.csv";
+	strcpy( datafile, datafile_default);
 	//try to load from file
 	if( NULL != filename){
 		string line;
@@ -55,6 +59,11 @@ Configuration::Configuration( char* filename){
 			else if( 0 == key.compare("nGenerations")){
 				int newField;
 				if( valueStream >> newField)
-					nGenerations = newField;}}
+					nGenerations = newField;}
+			else if( 0 == key.compare("datafile")){
+				strcpy( datafile, value.c_str());}}
 		//done
 		file.close();}}
+
+Configuration::~Configuration(){
+	delete[] datafile;}

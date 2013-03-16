@@ -25,7 +25,7 @@ public:
 
 	//Constructors and Destructor
 	Population( const Population&);
-	Population( const Configuration& configuration = Configuration(NULL));
+	Population( const Configuration& conf = Configuration());
 	~Population();
 
 	//Operators

@@ -37,25 +37,28 @@ resources: \
 
 #locals
 queens-lib.a: \
+		assets/configuration.o \
 		assets/entity.o \
 		assets/functions.o \
 		assets/population.o \
-		assets/configuration.o
+		assets/reporter.o
 	ar rc queens-lib.a \
+		assets/configuration.o \
 		assets/entity.o \
 		assets/functions.o \
 		assets/population.o \
-		assets/configuration.o
+		assets/reporter.o
 	ranlib queens-lib.a
 
 solver.o: \
 		solver.cpp \
 		queens-lib.h \
+		assets/configuration.h \
 		assets/debug.h \
 		assets/entity.h \
 		assets/globals.h \
 		assets/population.h \
-		assets/configuration.h
+		assets/reporter.h
 	g++ -c -o solver.o \
 		solver.cpp
 solver: \
@@ -66,12 +69,22 @@ solver: \
 		queens-lib.a
 
 #assets
+assets/configuration.o: \
+		assets/configuration.h \
+		assets/configuration.cpp
+	g++ -c -o assets/configuration.o \
+		assets/configuration.cpp
 assets/entity.o: \
 		assets/debug.h \
 		assets/entity.h \
 		assets/entity.cpp
 	g++ -c -o assets/entity.o \
 		assets/entity.cpp
+assets/functions.o: \
+		assets/globals.h \
+		assets/functions.cpp
+	g++ -c -o assets/functions.o \
+		assets/functions.cpp
 assets/population.o: \
 		assets/debug.h \
 		assets/entity.o \
@@ -79,16 +92,14 @@ assets/population.o: \
 		assets/population.cpp
 	g++ -c -o assets/population.o \
 		assets/population.cpp
-assets/functions.o: \
-		assets/globals.h \
-		assets/functions.cpp
-	g++ -c -o assets/functions.o \
-		assets/functions.cpp
-assets/configuration.o: \
-		assets/configuration.h \
-		assets/configuration.cpp
-	g++ -c -o assets/configuration.o \
-		assets/configuration.cpp
+assets/reporter.o: \
+		assets/debug.h \
+		assets/entity.o \
+		assets/population.o \
+		assets/reporter.h \
+		assets/reporter.cpp
+	g++ -c -o assets/reporter.o \
+		assets/reporter.cpp
 
 #tests
 test-s: test-solver

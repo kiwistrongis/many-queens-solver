@@ -6,5 +6,6 @@
 #include "assets/entity.h"
 #include "assets/globals.h"
 #include "assets/population.h"
+#include "assets/reporter.h"
 
 #endif

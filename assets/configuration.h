@@ -2,6 +2,7 @@
 #define assets_configuration_h
 
 //library includes
+#include <cstddef>
 #include <vector>
 //local includes
 
@@ -12,18 +13,22 @@
  **/
 class Configuration {
 public:
-	// Population Config Fields
+	//Population Config Fields
 	int problem_size;
 	int N;
 	double mutation_chance;
 	double cross_chance;
 	bool removeTheStrong;
 
-	// Run Config Fields
+	//Run Config Fields
 	int nGenerations;
+
+	//Report Config Fields
+	char* datafile;
 
 	//Constructor
 	Configuration( char* filename = NULL);
+	~Configuration();
 private:
 };
 
