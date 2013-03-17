@@ -8,14 +8,19 @@ plotfile = argv(){2};
 data = csvread( datafile);
 
 G = data(:,1);
-data = data(:,2:end);
+nSols = data(:,2);
+data = data(:,3:end);
 f = 0:( size( data, 2) - 1);
 
 [f_grid, G_grid] = meshgrid(f,G);
 
-surf( f_grid, G_grid, data);
+contourf( f_grid, G_grid, data);
 xlabel("Fitness");
 ylabel("Generation");
 zlabel("Count");
+print( strcat(plotfile,"_quality.png"));
 
-print( plotfile);
+plot( G, nSols);
+xlabel("Generation");
+ylabel("Number of Solutions found");
+print( strcat(plotfile,"_nSolutions.png"));

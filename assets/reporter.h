@@ -18,7 +18,8 @@ public:
 	std::ofstream datafile;
 	bool fail;
 	char* datafile_path;
-	char* chartfile;
+	char* solutionsfile_path;
+	char* plotfile_base;
 	char* plotscript_logfile;
 
 	//Constructor and Destructor
@@ -26,7 +27,8 @@ public:
 	~Reporter();
 
 	//Functions
-	void capture( const Population& population, const int& i);
+	void capture( Population& population, const int& i);
+	void writeSolutions( Population& population);
 };
 
 #endif

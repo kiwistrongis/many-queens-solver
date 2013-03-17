@@ -24,6 +24,9 @@ Entity& Entity::operator=( const Entity& other){
 	if( this == &other)
 		return *this;
 	//shallow fields
+	if( !other.problem_size){
+		printf("error!\n");
+		exit(1);}
 	problem_size = other.problem_size;
 	//deep fields
 	int* other_permutation = other.extract_permutation();
@@ -165,7 +168,7 @@ Entity& Entity::cross( const Entity& other){
 	for( int i = rand() % chromosome.size(); i < chromosome.size(); i++)
 		//copy the ith bit from the other
 		chromosome[i] = other.chromosome[i];
-	//repair the possible broken chromosome
+	//repair the possibly broken chromosome
 	this->fix();
 	//done
 	return *this;}

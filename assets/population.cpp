@@ -20,11 +20,16 @@ Population::Population( const Configuration& conf){
 	mutation_chance = conf.mutation_chance;
 	cross_chance = conf.cross_chance;
 	removeTheStrong = conf.removeTheStrong;
+	selection_method = conf.selection_method;
 
 	//create all the entities
 	Entity* newEntity;
 	while( entities.size() < N)
-		entities.push_back( Entity( problem_size));}
+		entities.push_back( Entity( problem_size));
+	for( int i = 0; i < N; i++)
+		if( entities[i].problem_size == 0){
+			printf("bad problem_size!\n");
+			exit(1);}}
 
 Population::~Population(){
 	entities.clear();
@@ -50,15 +55,25 @@ Population& Population::operator=( const Population& other){
 
 // Evolution
 void Population::evolve(){
-	int* stats = getStats();
-	double average = getAverage( stats);
-	double standardDeviation =
-		getStandardDeviation( average, stats);
-	delete[] stats;
+	//check for new solutions
 	saveTheStrong();
-	cullTheWeak( average, standardDeviation);
+	//re-select the population
+	switch( selection_method){
+		case cull_select:
+			cullTheWeak();
+			break;
+		case roulette_select:
+			rouletteSelect();
+			break;
+		case roulette_select2:
+			rouletteSelect2();
+			break;
+		default:
+			break;}
+	//mutate and cross the population
 	mutate_each();
-	cross_each();}
+	cross_each();
+	return;}
 	
 void Population::mutate_each(){
 	for( int i = 0; i < N; i++)
@@ -84,18 +99,78 @@ void Population::saveTheStrong(){
 			if( removeTheStrong)
 				entities[i].newRandomPermutation();}}
 
-void Population::cullTheWeak( double average, double standardDeviation){
+void Population::cullTheWeak(){
+	//find avg and stddev
+	int* stats = getStats();
+	double average = getAverage( stats);
+	double standardDeviation =
+		getStandardDeviation( average, stats);
+	delete[] stats;
+	//reset the bad solutions
 	for( int i = 0; i < N; i++)
 		if( entities[i].fitness() - average > 0)
 			entities[i].newRandomPermutation();}
 
-void Population::cullTheVeryWeak( double average, double standardDeviation){
+void Population::cullTheVeryWeak(){
+	//find avg and stddev
+	int* stats = getStats();
+	double average = getAverage( stats);
+	double standardDeviation =
+		getStandardDeviation( average, stats);
+	delete[] stats;
+	//reset the bad solutions
 	for( int i = 0; i < N; i++)
 		if( entities[i].fitness() - average > standardDeviation)
 			entities[i].newRandomPermutation();}
 
 void Population::rouletteSelect(){
+	//setup
+	int worst = worstPossibleFitness();
+	double sum = 0.0;
 	double* chances = new double[N];
+	//build the chances array
+	for( int i = 0; i < N; i++){
+		chances[i] = 1 + worst - entities[i].fitness();
+		sum+=chances[i];}
+	//select N new entities
+	chances[0]= chances[0]/sum;
+	for( int i = 1; i < N; i++)
+		chances[i]= chances[i-1] + chances[i]/sum;
+	//select N new entities
+	std::vector<Entity> newEntities;
+	for( int i = 0; i < N; i++){
+		double chance = randDouble();
+		int j;
+		for( j = 0; j < N; j++)
+			if( chances[j+1] > chance)
+				break;
+		newEntities.push_back( entities[j]);}
+	entities.clear();
+	entities = newEntities;
+	delete[] chances;}
+
+void Population::rouletteSelect2(){
+	//setup
+	double sum = 0.0;
+	double* chances = new double[N];
+	//build the chances array
+	for( int i = 0; i < N; i++){
+		chances[i] = 10.0/(entities[i].fitness()+1);
+		sum+=chances[i];}
+	chances[0]= chances[0]/sum;
+	for( int i = 1; i < N; i++)
+		chances[i]= chances[i-1] + chances[i]/sum;
+	//select N new entities
+	std::vector<Entity> newEntities;
+	for( int i = 0; i < N; i++){
+		double chance = randDouble();
+		int j;
+		for( j = 0; j < N; j++)
+			if( chances[j+1] > chance)
+				break;
+		newEntities.push_back( entities[j]);}
+	entities.clear();
+	entities = newEntities;
 	delete[] chances;}
 
 // Statistics

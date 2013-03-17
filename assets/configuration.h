@@ -19,13 +19,15 @@ public:
 	double mutation_chance;
 	double cross_chance;
 	bool removeTheStrong;
+	int selection_method;
 
 	//Run Config Fields
 	int nGenerations;
 
 	//Report Config Fields
 	char* datafile;
-	char* chartfile;
+	char* solutionsfile;
+	char* plotfile_base;
 	char* plotscript_logfile;
 	int report_period;
 

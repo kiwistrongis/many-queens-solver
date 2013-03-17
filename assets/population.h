@@ -7,6 +7,11 @@
 #include "configuration.h"
 #include "entity.h"
 
+//definitions
+#define cull_select 1
+#define roulette_select 2
+#define roulette_select2 3	
+
 /** @class Population
  * @brief Represents a group of entities
  * 
@@ -22,6 +27,7 @@ public:
 	double mutation_chance;
 	double cross_chance;
 	bool removeTheStrong;
+	int selection_method;
 
 	//Constructors and Destructor
 	Population( const Population&);
@@ -38,9 +44,10 @@ public:
 	//Minor Evolution Functions
 	void save( Entity entity);
 	void saveTheStrong();
-	void cullTheWeak( double average, double standardDeviation);
-	void cullTheVeryWeak( double average, double standardDeviation);
+	void cullTheWeak();
+	void cullTheVeryWeak();
 	void rouletteSelect();
+	void rouletteSelect2();
 
 	//Statistics Functions
 	int* getStats() const;
